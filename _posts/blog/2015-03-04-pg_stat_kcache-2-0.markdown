@@ -130,7 +130,7 @@ Which gives us:
 
 The INSERT query had a runtime of about 1 minute. We see that it used 7.6s of CPU, and wrote 890 MB on disk. Without any surprise, this query is I/O bound.
 
-The SELECT query had a runtime of 5.1s, and it consumed 5s of CPU time. As expected, using md5() is CPU expensive, to the bottleneck here is the CPU. Also, we see that this query wrote 14000128 bytes. Why would a simple SELECT query without any aggregate would write 13MB on disk ? Yes, the answer is geneate_series(), which use a temporary file if the data don't fit in work_mem:
+The SELECT query had a runtime of 5.1s, and it consumed 5s of CPU time. As expected, using md5() is CPU expensive, to the bottleneck here is the CPU. Also, we see that this query wrote 14000128 bytes. Why would a simple SELECT query without any aggregate would write 13MB on disk ? Yes, the answer is generate_series(), which use a temporary file if the data don't fit in work_mem:
 
 {% highlight sql %}
 # SHOW work_mem ;
