@@ -11,7 +11,7 @@ date: 2015-07-02T11:08:03+01:00
 ---
 
 Après avoir attendu tellement de temps pour cette fonctionnalité,
-[HypoPG](https://github.com/dalibo.hypopg) ajoute le support des index
+[HypoPG](https://github.com/dalibo/hypopg) ajoute le support des index
 hypothétiques dans PostgreSQl, sous la forme d'une extension.
 
 ### Introduction

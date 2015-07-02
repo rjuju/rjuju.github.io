@@ -11,7 +11,7 @@ date: 2015-07-02T11:08:03+01:00
 ---
 
 After so much time missing this features,
-[HypoPG](https://github.com/dalibo.hypopg) implements hypothetical indexes
+[HypoPG](https://github.com/dalibo/hypopg) implements hypothetical indexes
 support for PostgreSQl, available as an extension.
 
 ### Introduction
