@@ -4,7 +4,7 @@ title: "pg_stat_kcache 2.0"
 modified:
 categories: postgresql
 excerpt:
-tags: [ postgresql, monitoring, PoWA]
+tags: [ postgresql, monitoring, PoWA, performance]
 image:
   feature:
 date: 2015-03-04T19:33:09+01:00

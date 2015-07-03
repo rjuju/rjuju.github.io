@@ -4,7 +4,7 @@ title: "Parlons des index hypothétiques"
 modified:
 categories: postgresqlfr
 excerpt:
-tags: [PoWA, performance, tuning]
+tags: [PoWA, performance, tuning, postgresql]
 image:
   feature:
 date: 2015-07-02T11:08:03+01:00
