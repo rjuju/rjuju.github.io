@@ -7,7 +7,7 @@ excerpt:
 tags: [monitoring, tuning, postgresql]
 image:
   feature:
-date: 2015-07-20T11:48:16+01:00
+date: 2015-07-22T11:48:16+01:00
 ---
 
 Have you ever wished to know what configuration changed during the last weeks,
