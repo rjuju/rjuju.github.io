@@ -26,14 +26,14 @@ yet.  Assuming you just extract the tarball of the release 1.0.0 with a typical
 server configuration:
 
 {% highlight bash %}
-$ cd pg\_track\_settings-1.0.0
+$ cd pg_track_settings-1.0.0
 $ sudo make install
 {% endhighlight %}
 
 Then the is available.  Create the extension on the database of your choice:
 
 {% highlight sql %}
-postgres=# CREATE EXTENSION pg\_track\_settings ;
+postgres=# CREATE EXTENSION pg_track_settings ;
 CREATE EXTENSION
 {% endhighlight %}
 
@@ -48,7 +48,7 @@ a 5 minutes accuracy, a simple cron entry like this for the postgres user is
 enough:
 
 {% highlight bash %}
-\*/5 \*  \* \* \*     psql -c "SELECT pg\_track\_settings\_snapshot()" > /dev/null 2>&1
+\*/5 \*  \* \* \*     psql -c "SELECT pg_track_settings_snapshot()" > /dev/null 2>&1
 {% endhighlight %}
 
 A background worker could be used on PostgreSQL 9.3 and more, but as we only
@@ -62,7 +62,7 @@ allows to run task like [pgAgent](http://www.pgadmin.org/docs/dev/pgagent.html).
 Let's call the snapshot function to get ti initial values:
 
 {% highlight sql %}
-postgres=# select pg\_track\_settings\_snapshot()
+postgres=# select pg_track_settings_snapshot()
  ----------------------------
   t
   (1 row)
@@ -74,14 +74,14 @@ be used on a PostgreSQL 9.4 or more release), reload the configuration and take
 another snapshot:
 
 {% highlight sql %}
-postgres=# select pg\_reload\_conf();
- pg\_reload\_conf
+postgres=# select pg_reload_conf();
+ pg_reload_conf
  ----------------
   t
   (1 row)
 
-postgres=# select * from pg\_track\_settings\_snapshot();
- pg\_track\_settings\_snapshot
+postgres=# select * from pg_track_settings_snapshot();
+ pg_track_settings_snapshot
 ----------------------------
  t
 (1 row)
@@ -93,10 +93,10 @@ First, what changed between two timestamp. For instance, let's check what
 changed in the last 2 minutes:
 
 {% highlight sql %}
-postgres=# SELECT * FROM pg\_track\_settings\_diff(now() - interval '2 minutes', now());
-        name         | from\_setting | from\_exists | to\_setting | to\_exists
+postgres=# SELECT * FROM pg_track_settings_diff(now() - interval '2 minutes', now());
+        name         | from_setting | from_exists | to_setting | to_exists
 ---------------------+--------------|-------------|------------|----------
- max\_wal\_size      | 93           | t           | 31         | t
+ max_wal_size        | 93           | t           | 31         | t
 (1 row)
 {% endhighlight %}
 
@@ -117,11 +117,11 @@ What do we learn ?
 Also, we can get the history of a specific setting:
 
 {% highlight sql %}
-postgres=# SELECT * FROM pg\_track\_settings\_log('max\_wal\_size');
-              ts               |     name     | setting\_exists | setting 
+postgres=# SELECT * FROM pg_track_settings_log('max_wal_size');
+              ts               |     name     | setting_exists | setting
 -------------------------------+--------------+----------------+---------
- 2015-07-17 22:42:01.156948+02 | max\_wal\_size | t              | 31
- 2015-07-17 22:38:02.722206+02 | max\_wal\_size | t              | 93
+ 2015-07-17 22:42:01.156948+02 | max_wal_size | t              | 31
+ 2015-07-17 22:38:02.722206+02 | max_wal_size | t              | 93
 (2 rows)
 {% endhighlight %}
 
@@ -129,13 +129,13 @@ You can also retrieve the entire configuration at a specified timestamp.  For
 instance:
 
 {% highlight sql %}
-postgres=# SELECT * FROM pg\_track\_settings('2015-07-17 22:40:00');
+postgres=# SELECT * FROM pg_track_settings('2015-07-17 22:40:00');
                 name                 |     setting
 -------------------------------------+-----------------
 [...]
- max\_wal\_senders                     | 5
- max\_wal\_size                        | 93
- max\_worker\_processes                | 8
+ max_wal_senders                     | 5
+ max_wal_size                        | 93
+ max_worker_processes                | 8
 [...]
 {% endhighlight %}
 
@@ -151,7 +151,7 @@ functions:
 And finally, just in case you can also know when PostgreSQL has been restarted:
 
 {% highlight sql %}
-postgres=# SELECT * FROM pg\_reboot;
+postgres=# SELECT * FROM pg_reboot;
               ts
 -------------------------------
  2015-07-17 08:39:37.315131+02
