@@ -1,4 +1,5 @@
 ---
+redirect_from: "/postgresql/2015/07/20/keep-an-eye-on-your-postgresql-configuration.html"
 layout: post
 title: "Keep an eye on your PostgreSQL configuration"
 modified:
