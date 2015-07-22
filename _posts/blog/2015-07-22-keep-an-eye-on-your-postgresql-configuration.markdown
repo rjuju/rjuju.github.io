@@ -30,7 +30,7 @@ $ cd pg_track_settings-1.0.0
 $ sudo make install
 {% endhighlight %}
 
-Then the is available.  Create the extension on the database of your choice:
+Then the extension is available.  Create the extension on the database of your choice:
 
 {% highlight sql %}
 postgres=# CREATE EXTENSION pg_track_settings ;
@@ -48,7 +48,7 @@ a 5 minutes accuracy, a simple cron entry like this for the postgres user is
 enough:
 
 {% highlight bash %}
-\*/5 \*  \* \* \*     psql -c "SELECT pg_track_settings_snapshot()" > /dev/null 2>&1
+*/5 *  * * *     psql -c "SELECT pg_track_settings_snapshot()" > /dev/null 2>&1
 {% endhighlight %}
 
 A background worker could be used on PostgreSQL 9.3 and more, but as we only
