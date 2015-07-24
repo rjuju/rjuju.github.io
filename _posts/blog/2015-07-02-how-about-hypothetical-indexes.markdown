@@ -42,7 +42,7 @@ really not a new idea, a lot of popular RDBMS support them.
 
 There has already been some previous work on this several years ago, presented
 at [pgCon 2010](http://www.pgcon.org/2010/schedule/events/233.en.html), which
-was implenting much more than hypothetical indexes, but this was a research
+was implementing much more than hypothetical indexes, but this was a research
 work, which means that we never saw those features coming up in PostgreSQL.
 This great work is only available as a fork of a few specific PostgreSQL
 versions, the most recent being 9.0.1.
@@ -55,7 +55,7 @@ support.
   * first of all, it must be completely pluggable. It's available as an
 extension and can be used (for now) on any 9.2 or higher PostgreSQL server.
   * it must be as non intrusive as it's possible. It's usable as soon as you
-create the extension, without restart. Also, each backend has it's own set of
+create the extension, without restart. Also, each backend has its own set of
 hypothetical indexes, which mean that adding an hypothetical index will not
 disturb other connections. Also, the hypothetical indexes are stored in memory,
 adding/removing a huge amount of them will not bloat your system catalog.
@@ -73,7 +73,7 @@ For now, the following functions are available:
   * **hypopg()**: return the list of hypothetical indexes (in a
 similar way as pg\_index).
   * **hypopg\_add\_index(schema, table, attribute, access\_method)**: create a
-1-column only hypothetical index.
+1-column-only hypothetical index.
   * **hypopg\_create\_index(query)**: create an hypothetical index using a
 standard CREATE INDEX statement.
   * **hypopg\_drop\_index(oid)**: remove the specified hypothetical index.
@@ -84,8 +84,8 @@ hypothetical index
   * **hypopg\_reset()**: remove all hypothetical indexes
 
 If some hypothetical indexes exists for some relations used in an EXPLAIN
-(without ANALYZE) statement, they will automatically added to the list of real
-indexes. PostgreSQL will then choose to use them or not.
+(without ANALYZE) statement, they will automatically be added to the list of
+real indexes. PostgreSQL will then choose to use them or not.
 
 ### Usage
 
@@ -128,7 +128,7 @@ rjuju=# EXPLAIN SELECT * FROM testable WHERE id < 1000 ;
 
 {% endhighlight %}
 
-No surprise, a sequential scan is the only way to do. Now, let's try to add
+No surprise, a sequential scan is the only way to go. Now, let's try to add
 an hypothetical index, and EXPLAIN again:
 
 {% highlight sql %}
