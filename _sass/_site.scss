@@ -146,7 +146,8 @@ figcaption {
 	padding: .5em 1em;
 	text-indent: 0;
 	@include font-size(16);
-	background-color: lighten($black, 95);
+	//background-color: lighten($blue, 95);
+	background-color: $notice;
 	border: 1px solid lighten($black, 90);
 	@include rounded(4px);
 }
@@ -188,7 +189,9 @@ li {
 		margin: 0 2px;
 		padding: 0 5px;
 		border: 1px solid lighten($black, 90);
-		background-color: lighten($black, 95);
+		//background-color: lighten($black, 95);
+		background-color: lighten($skyblue, 20);
+		color: darken($skyblue, 35);
 		@include rounded(3px);
 	}
 }
