@@ -119,7 +119,7 @@ Let's try with a single 1 integer column table containing 10M rows:
 {% endhighlight %}
 
 The user data should need 10M * 4B, ie. around **38MB**, while this table will
-consume **348MB**.  Inserting the data takes around **23**.
+consume **348MB**.  Inserting the data takes around **23** seconds.
 
 **NOTE:** If you do the maths, you'll find out that the overhead is slighty
 more than **32B**, not **23B**.  This is because each block also has some
