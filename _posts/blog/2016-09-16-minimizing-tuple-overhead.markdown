@@ -133,7 +133,7 @@ Let's compare with aggregated versions of the same data:
 {% highlight sql %}
 # CREATE TABLE agg_1 (id integer[]);
 
-# INSERT INTO raw_1 SELECT array_agg(i)
+# INSERT INTO agg_1 SELECT array_agg(i)
 FROM generate_series(1,10000000) i
 GROUP BY i % 2000000;
 
