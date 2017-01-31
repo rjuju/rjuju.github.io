@@ -137,7 +137,7 @@ Let's compare with aggregated versions of the same data:
 FROM generate_series(1,10000000) i
 GROUP BY i % 2000000;
 
-# CREATE INDEX ON raw_1 (id);
+# CREATE INDEX ON agg_1 (id);
 {% endhighlight %}
 
 This will insert 5 elements per row.  I've done the same test with 20, 100, 200
