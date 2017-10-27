@@ -85,7 +85,7 @@ As the overhead is fixed, it'll become more and more neglictable as the row
 size grows.  If you only store a single int column (**4 bytes**), each row will
 need:
 
-{% highlight sql %}
+{% highlight C %}
 23B + 4B = 27B
 {% endhighlight %}
 
@@ -94,7 +94,7 @@ So, it's **85% overhead**, pretty horrible.
 On the other hand, if you store 5 integer, 3 bigint and 2 text columns (let's
 say ~80B average), you'll have:
 
-{% highlight sql %}
+{% highlight C %}
 23B + 5*4B + 3*8B + 2*80B = 227B
 {% endhighlight %}
 
