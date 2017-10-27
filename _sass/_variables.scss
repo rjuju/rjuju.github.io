@@ -36,8 +36,8 @@ $skyblue            : #87d7ff;
 $table-border-color           : $border-color;
 $table-border                 : 1px solid $table-border-color;
 $table-background             : $body-color;
-$table-header-color           : lighten($table-background, 10);
-$table-hover-color            : darken($table-background, 2);
+$table-header-color           : darken($table-background, 10);
+$table-hover-color            : darken($table-background, 5);
 $table-stripe-color           : darken($table-background, 4);
 $table-stripe-color-hover     : darken($table-stripe-color, 5);
 
