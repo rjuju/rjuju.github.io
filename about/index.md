@@ -16,7 +16,7 @@ I try to contribute on open source projects as much as I can. I'm mainly
 involved in:
 
 * [HypoPG](http://github.com/hypopg/hypopg), an extension to add hypothetical
-* indexes in PostgreSQL
+  indexes in PostgreSQL
 * [PoWA](http://github.om/powa-team), a PostgreSQL Workload Analyzer
 * [OPM](http://opm.github.io), a dedicated monitoring suite for PostgreSQL
 * and of course PostgreSQL itself.
