@@ -9,9 +9,14 @@ image:
   creditlink:
 ---
 
-My name is Julien Rouhaud, I'm a DBA at [Dalibo](http://www.dalibo.com), a french company providing support on [PostgreSQL](http://www.postgresql.org).
+My name is Julien Rouhaud.  I've been a PostgreSQL DBA and software developer
+for  multiple years.
 
-I try to contribute on open source projects as much as I can. I'm mainly involved in
+I try to contribute on open source projects as much as I can. I'm mainly
+involved in:
 
-* [PoWA](http://dalibo.github.io/powa), a PostgreSQL Workload Analyzer
+* [HypoPG](http://github.com/hypopg/hypopg), an extension to add hypothetical
+* indexes in PostgreSQL
+* [PoWA](http://github.om/powa-team), a PostgreSQL Workload Analyzer
 * [OPM](http://opm.github.io), a dedicated monitoring suite for PostgreSQL
+* and of course PostgreSQL itself.
