@@ -18,6 +18,7 @@ search_omit: true
     {% if post.excerpt %}
      <span class="excerpt">
       {{ post.excerpt }}
+      <a href="{{ site.url }}{{ post.url }}" class="more">Continuer à lire</a>
      </span>
     {% endif %}
    </a>

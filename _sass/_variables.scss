@@ -20,7 +20,7 @@ body {
 
 
 // COLORS =====================================================
-$body-color         : #fff;
+$body-color         : darken(#fff, 2);
 $text-color         : #222;
 $base-color         : #343434;    
 $comp-color         : spin($base-color, 180); 
