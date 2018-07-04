@@ -35,7 +35,7 @@ unusual settings.  The most relevant hardware and settings are:
 
 The high `shared_buffers`, especially given the quite old PostgreSQL version,
 is a good candidate for more investigation.  The `max_connections` is also
-quite high, but unfortunately the software editor claims that using a
+quite high, but unfortunately the software vendor claims that using a
 connection pooler isn't supported.  Therefore most of the connections are idle.
 This isn't great because it implies quite some overhead to acquire a snapshot,
 but there are enough CPU to handle quite a lot of connections.
@@ -243,11 +243,11 @@ pages](https://www.postgresql.org/docs/current/static/kernel-resources.html#LINU
 Indeed, with 2MB pages instead of 4kB, the memory needed for PTE will
 automatically drop 512 times.  This would be an easy and huge win.
 Unfortunately, this is only possible since version 9.4, but upgrading wasn't
-even an option, since the software editor claimed that only the 9.3 version is
+even an option, since the software vendor claimed that only the 9.3 version is
 supported.
 
 Another way to reduce the PTE size is to reduce the number of connections,
-which was quite high.  Unfortunately again, the editor claimed that connection
+which was quite high.  Unfortunately again, the vendor claimed that connection
 poolers aren't supported, and the customer needed that many connections.
 
 So the only remaining solution was therefore to reduce the shared\_buffers.
@@ -255,7 +255,7 @@ After some tries, the higher value that could be used to avoid the extreme
 slowdown was **4 GB**.  Fortunately, PostgreSQL was able to have quite good
 performance with this size of cache.
 
-If software editors read this post, please understand that if people ask for
+If software vendors read this post, please understand that if people ask for
 newer PostgreSQL version compatibility, or pooler compatibility, they have very
 good reasons for that.  There are usually very few behavior changes with newer
 versions, and they're all documented!
