@@ -12,7 +12,7 @@ sitemap: false
 <id>{{ site.url }}/</id>
 <author>
   <name>{{ site.owner.name }}</name>
-  <uri>{{ site.url }}/</uri>
+  <uri>{{ site.url }}/postgresqlfr/</uri>
   {% if site.owner.email %}<email>{{ site.owner.email }}</email>{% endif %}
 </author>
 {% for post in site.categories.postgresqlfr limit:20 %}
