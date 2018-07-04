@@ -155,7 +155,7 @@ In any case, in order to confirm any theory we need to use very specific tools.
 ### Deeper analysis: TLB exhaustion
 
 Without going to deep, you need to know that each processus has an area of
-kernel memory used to cache the [page tables
+kernel memory used to store the [page tables
 entries](https://en.wikipedia.org/wiki/Page_table#PTE), called the `PTE`.  This
 area is usually not big.  But since PostgreSQL is relying on multiple processes
 accessing a big chunk of shared memory, each process will have an entry for
