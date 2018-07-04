@@ -327,10 +327,10 @@ span + .entry-title {
 	padding: 0;
 	list-style-type: none;
 	article {
-		border: solid 1px black;
+		border: solid 1px lighten($black, 55);
 		padding: 15px 10px 10px 10px;
 		background-color: $white;
-		box-shadow: 0px 1px 3px lighten($black, 35);
+		box-shadow: 0px 1px 2px lighten($black, 35);
 	}
 	li {
 		padding: 8px 0;
