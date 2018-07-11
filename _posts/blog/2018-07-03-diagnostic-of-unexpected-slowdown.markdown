@@ -130,10 +130,10 @@ However, the second query shows that the same thing is happening while all the
 blocks are in `shared_buffers`.  This cannot be a buffer eviction problem due
 to too high `shared_buffers` setting, or any disk latency issue.
 
-While some PostgreSQL configuration settings could be changed, none of them
+While some PostgreSQL configuration settings could be improved, none of them
 seems to explain this exact behavior.  It'd be likely that modifying them will
-fix the situation, but we need more information to know exactly what's
-happening here and avoid any further performance issue.
+fix the situation, but we need more information to undetstand what's happening
+here exactly and avoid any further performance issue.
 
 ### Any wild guess?
 
@@ -156,11 +156,15 @@ In any case, in order to confirm any theory we need to use very specific tools.
 
 Without going to deep, you need to know that each processus has an area of
 kernel memory used to store the [page tables
-entries](https://en.wikipedia.org/wiki/Page_table#PTE), called the `PTE`.  This
-area is usually not big.  But since PostgreSQL is relying on multiple processes
-accessing a big chunk of shared memory, each process will have an entry for
-each 4kB (the default page size) address of the shared buffers it has accessed.
-So you can end up with quite a lot of memory used for the `PTE`.
+entries](https://en.wikipedia.org/wiki/Page_table#PTE), called the `PTE`, which
+are mapping between the virtual addresses that the process are using and the
+real physical address in RAM.  This area is usually not big, because usually
+a process doesn't access to gigabytes of data in RAM.  But since PostgreSQL is
+relying on multiple processes accessing a big chunk of shared memory, each
+process will have an entry for each 4kB (the default page size) address of the
+shared buffers it has accessed.  So you can end up with quite a lot of memory
+used for the `PTE`, and even have overall mappings that address way more than
+the total physical memory available on the server.
 
 You can know the size of the `PTE` at the O/S level looking for the **VmPTE**
 entry in the processus status.  You can also check the **RssShmem** entry to
@@ -189,7 +193,7 @@ drastically increasing the latency.
 
 On the system that had performance issue, with **16 GB** of shared buffers and
 **1500** long lived connections, the total memory size of the combined PTE was
-around 45 GB.  A rough approximation can be done with this small script:
+around **45 GB**!  A rough approximation can be done with this small script:
 
 {% highlight bash %}
 for p in $(pgrep postgres); do grep "VmPTE:" /proc/$p/status; done | awk '{pte += $2} END {print pte / 1024 / 1024}'
@@ -227,12 +231,15 @@ the problem occurs:
      2.03%     2.03%  postgres         [k] _spin_lock
 {% endhighlight %}
 
-We can see `s_lock`, the postgres function that wait on a spinlock consuming
-almost 9% of the CPU time.  Then with almost 5% of the CPU time is consumed by
-`smaps_pte_entry`, a kernel function doing the translation for a single entry.
-This is supposed to be extremely fast, and shouldn't even appear in a perf
-record!  This certainly explain the extreme slowdown, and the lack of high
-lever counters able to explain such slowdowns.
+We can see `s_lock`, the postgres function that wait on a
+[spinlock](https://en.wikipedia.org/wiki/Spinlock) consuming almost 9% of the
+CPU time.  This indicates a general slowdown and high contentions.
+
+Then almost 5% of the CPU time is consumed by `smaps_pte_entry`, a
+kernel function doing the translation for a single entry.  This is supposed to
+be extremely fast, and shouldn't even appear in a perf record!  This certainly
+explain the extreme slowdown, and the lack of high lever counters able to
+explain such slowdowns.
 
 ### The solution
 
@@ -247,13 +254,14 @@ even an option, since the software vendor claimed that only the 9.3 version is
 supported.
 
 Another way to reduce the PTE size is to reduce the number of connections,
-which was quite high.  Unfortunately again, the vendor claimed that connection
-poolers aren't supported, and the customer needed that many connections.
+which is quite high here, and would also probably improve performance.
+Unfortunately again, the vendor claimed that connection poolers aren't
+supported, and the customer needed that many connections.
 
 So the only remaining solution was therefore to reduce the shared\_buffers.
 After some tries, the higher value that could be used to avoid the extreme
 slowdown was **4 GB**.  Fortunately, PostgreSQL was able to have quite good
-performance with this size of cache.
+performance with this size of dedicated cache.
 
 If software vendors read this post, please understand that if people ask for
 newer PostgreSQL version compatibility, or pooler compatibility, they have very
