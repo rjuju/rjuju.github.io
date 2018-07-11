@@ -5,6 +5,7 @@ modified:
 categories: postgresql
 excerpt:
 tags: [tuning, postgresql, performance]
+lang: gb
 image:
   feature:
 date: 2015-08-18T16:03:34+02:00

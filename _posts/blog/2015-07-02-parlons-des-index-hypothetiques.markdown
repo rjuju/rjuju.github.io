@@ -5,6 +5,7 @@ modified:
 categories: postgresqlfr
 excerpt:
 tags: [PoWA, performance, tuning, postgresql]
+lang: fr
 image:
   feature:
 date: 2015-07-02T11:08:03+01:00

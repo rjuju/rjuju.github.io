@@ -5,6 +5,7 @@ modified:
 categories: postgresql
 excerpt:
 tags: [postgresql, performance]
+lang: gb
 image:
   feature:
 date: 2016-09-16T14:03:34+02:00

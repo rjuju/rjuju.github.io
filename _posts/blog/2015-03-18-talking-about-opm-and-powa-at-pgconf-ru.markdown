@@ -5,6 +5,7 @@ modified:
 categories: postgresql
 excerpt:
 tags: [ OPM, PoWA, talk ]
+lang: gb
 image:
   feature:
 date: 2015-03-18T09:09:10+01:00

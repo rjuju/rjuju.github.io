@@ -5,6 +5,7 @@ modified:
 categories: postgresql
 excerpt:
 tags: [postgresql, performance, PoWA]
+lang: gb
 image:
   feature:
 date: 2018-07-09T12:43:34+02:00

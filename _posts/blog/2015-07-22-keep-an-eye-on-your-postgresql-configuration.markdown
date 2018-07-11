@@ -6,6 +6,7 @@ modified:
 categories: postgresql
 excerpt:
 tags: [monitoring, tuning, postgresql]
+lang: gb
 image:
   feature:
 date: 2015-07-22T11:48:16+01:00

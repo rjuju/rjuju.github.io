@@ -5,6 +5,7 @@ modified:
 categories: postgresql
 excerpt:
 tags: [ postgresql, monitoring, PoWA, performance]
+lang: gb
 image:
   feature:
 date: 2015-03-04T19:33:09+01:00

@@ -338,6 +338,9 @@ span + .entry-title {
 		border-bottom: 1px solid rgba($black,.10);
 		@include font-size(18,no);
 		@include clearfix;
+        .flag-icon {
+            margin-right: 5px;
+        }
 	}
 	a > span {
 		float: right;
