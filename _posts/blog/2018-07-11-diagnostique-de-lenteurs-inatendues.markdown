@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Diagnostique de lenteurs inatendues"
+title: "Diagnostique de lenteurs inattendues"
 modified:
 categories: postgresqlfr
 excerpt:
