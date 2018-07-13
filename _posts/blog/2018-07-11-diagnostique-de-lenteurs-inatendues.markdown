@@ -22,7 +22,8 @@ bonne pratique.
 
 ### Le problème
 
-Le problème de performance initialement rapporté contenait suffisamment d'informations pour savoir qu'il s'agissait d'un problème étrange.
+Le problème de performance initialement rapporté contenait suffisamment
+d'informations pour savoir qu'il s'agissait d'un problème étrange.
 
 Le serveur utilise un PostgreSQL 9.3.5.  Oui, il y a plusieurs versions mineures
 de retard, et bien évidémment bon nombre de versions majeures de retard.  La
@@ -252,15 +253,42 @@ Maintenant, quand le problème survient :
 
 Nous pouvons voir `s_lock`, la fonction de PostgreSQL qui attend sur un
 [spinlock](https://fr.wikipedia.org/wiki/Spinlock) consommant preque 9% du
-temps processeur.  Cela indique un ralentissement général et de fortes
-contentions.
+temps processeur.  Mais il s'agit de PostgreSQL 9.3, et les ligthweight locks
+(des verrous internes transitoires) étaient encore implémentés à l'aide de spin
+lock ([ils sont maintenant implémentés à l'aide d'opérations
+atomiques](https://github.com/postgres/postgres/commit/ab5194e6f617a9a9e7)).
+Si nous regardons un peu plus en détails les appeks à `s_lock` :
 
-Ensuite presque 5% du temps processeur est utilisé par `smaps_pte_entry`, une
-fonction du noyau effectuant la translation d'addresse pour une entrée.  Cela
-devrait normalement être extrêmement rapide, et ne devrait même pas apparaître
-dans un rapport perf !  Ça explique très certainement les ralentissements
-extrêmes, ainsi que le manque de compteurs de plus haut niveau permettant de
-les expliquer.
+{% highlight none %}
+     8.96%     8.64%  postgres         [.] s_lock
+                   |
+                   ---s_lock
+                      |
+                      |--83.49%-- LWLockAcquire
+[...]
+                      |--15.59%-- LWLockRelease
+[...]
+                      |--0.69%-- 0x6382ee
+                      |          0x6399ac
+                      |          ReadBufferExtended
+[...]
+{% endhighlight %}
+
+99% des appels à `s_lock` sont en effet dûs à des lightweight locks.  Cela
+indique un ralentissement général et de fortes contentions.  Mais cela n'est que la conséquence du vrai problème, la seconde fonction la plus consommatrice.
+
+Avec presque 5% du temps processeur, `smaps_pte_entry`, une fonction du noyau
+effectuant la translation d'addresse pour une entrée, nous montre le problème.
+Cette fonction devrait normalement être extrêmement rapide, et ne devrait même
+pas apparaître dans un rapport perf !  Cela veut dire que très souvent, quand
+un processus veut accéder à une page en mémoire, il doit attendre pour obtenir
+sa vraie adresse.  Mais attendre une translation d'adresse veut dire beaucoup
+de [bulles (pipeline stalls)](https://en.wikipedia.org/wiki/Pipeline_stall).
+Les processeurs ont des pipelines de plus en plus profonds, et ces bulles
+ruinent complètement les bénéfices de ce type d'architecture.  Au final, une
+bonne proportion du temps est tout simplement gâchée à attendre des adresses.
+Ça explique très certainement les ralentissements extrêmes, ainsi que le manque
+de compteurs de plus haut niveau permettant de les expliquer.
 
 ### La solution
 

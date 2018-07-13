@@ -233,14 +233,42 @@ the problem occurs:
 {% endhighlight %}
 
 We can see `s_lock`, the postgres function that wait on a
-[spinlock](https://en.wikipedia.org/wiki/Spinlock) consuming almost 9% of the
-CPU time.  This indicates a general slowdown and high contentions.
+[spinlock](https://en.wikipedia.org/wiki/Spinlock), consumes almost 9% of the
+CPU time.  But this is PostgreSQL 9.3, and lightweight locks (transient
+internal locks) were still implented using spin lock ([they now use atomic
+operation](https://github.com/postgres/postgres/commit/ab5194e6f617a9a9e7)).
+If we look a little bit more about `s_lock` calls:
 
-Then almost 5% of the CPU time is consumed by `smaps_pte_entry`, a
-kernel function doing the translation for a single entry.  This is supposed to
-be extremely fast, and shouldn't even appear in a perf record!  This certainly
-explain the extreme slowdown, and the lack of high lever counters able to
-explain such slowdowns.
+{% highlight none %}
+     8.96%     8.64%  postgres         [.] s_lock
+                   |
+                   ---s_lock
+                      |
+                      |--83.49%-- LWLockAcquire
+[...]
+                      |--15.59%-- LWLockRelease
+[...]
+                      |--0.69%-- 0x6382ee
+                      |          0x6399ac
+                      |          ReadBufferExtended
+[...]
+{% endhighlight %}
+
+99% of `s_lock` calls are indeed due to lightweight locks.  This indicates a
+general slowdown and high contentions.  But this is just a consequence of the
+real problem, the next top consumer function.
+
+With almost 5% of the CPU time `smaps_pte_entry`, a
+kernel function doing the translation for a single entry, shows the problem.
+This function is supposed to be extremely fast, and shouldn't even appear in a
+perf record!  It means that very often, when a process wants to access to page
+in RAM, it has to wait to get the real address.  But waiting for an address
+translation means a lot of [pipeline
+stalls](https://en.wikipedia.org/wiki/Pipeline_stall).  Processors have longer
+and longer pipeline, and those stalls totally ruin the benefits of this kind of
+architecture.  As a result, a good proportion of CPU time is simply wasted
+waiting for addresses. This certainly explain the extreme slowdown, and the
+lack of high lever counters able to explain such slowdowns.
 
 ### The solution
 
