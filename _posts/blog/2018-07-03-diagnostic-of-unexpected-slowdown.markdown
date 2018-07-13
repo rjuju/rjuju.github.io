@@ -155,8 +155,8 @@ In any case, in order to confirm any theory we need to use very specific tools.
 
 ### Deeper analysis: TLB exhaustion
 
-Without going to deep, you need to know that each processus has an area of
-kernel memory used to store the [page tables
+Without going into too much detail, you need to know that each processus has an
+area of kernel memory used to store the [page tables
 entries](https://en.wikipedia.org/wiki/Page_table#PTE), called the `PTE`, which
 are mapping between the virtual addresses that the process are using and the
 real physical address in RAM.  This area is usually not big, because usually
