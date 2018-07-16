@@ -12,15 +12,15 @@ date: 2015-07-02T11:08:03+01:00
 ---
 
 Après avoir attendu tellement de temps pour cette fonctionnalité,
-[HypoPG](https://github.com/dalibo/hypopg) ajoute le support des index
+[HypoPG](https://github.com/HypoPG/hypopg) ajoute le support des index
 hypothétiques dans PostgreSQl, sous la forme d'une extension.
 
 ### Introduction
 
 Cela fait maintenant quelques temps que la deuxième version de
-[PoWA](https://dalibo.github.io/powa) a été annoncée. Une des nouvelles
+[PoWA](https://powa.readthedocs.io/) a été annoncée. Une des nouvelles
 fonctionnalités de cette version est l'extension
-[pg\_qualstats](https://github.com/dalibo/pg_qualstats), écrite par
+[pg\_qualstats](https://github.com/powa-team/pg_qualstats), écrite par
 [Ronan Dunklau](https://rdunklau.github.io).
 
 Grâce à cette extension, il est maintenant possible de collecter des
@@ -290,11 +290,11 @@ Cependant, cette version peut déjà être utile dans de nombreux contextes.
 ### Et pour la suite ?
 
 Maintenant, la prochaine étape est d'implémenter le support d'HypoPG dans
-[PoWA](https://dalibo.github.io/powa/), pour aider les DBA à décider s'ils
+[PoWA](https://powa.readthedocs.io/), pour aider les DBA à décider s'ils
 devraient ou non créer les index suggérés, et supprimer les limitations
 actuelles.
 
 Si vous voulez essayer HypoPG, le dépôt est disponible ici :
-[github.com/dalibo/hypopg](https://github.com/dalibo/hypopg).
+[github.com/HypoPG/hypopg](https://github.com/HypoPG/hypopg).
 
 À très bientôt pour la suite !

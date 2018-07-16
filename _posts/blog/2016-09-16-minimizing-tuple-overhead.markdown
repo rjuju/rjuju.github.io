@@ -209,7 +209,8 @@ will require an extra sort which will be way slower than a btree index scan.
 
 Now that we've seen the basics, let's see how to go further: aggregating more
 than one columns and avoid to use too much disk space with a GIN index.  For
-this, I'll present how [PoWA](https://dalibo.github.io/powa) stores it's data.
+this, I'll present how [PoWA](https://powa.readthedocs.io/) stores it's
+data.
 
 For each datasource collected, two tables are used: the *historic and
 aggregated* one, and the *current* one.  These tables store data in a custom
@@ -358,7 +359,7 @@ WHERE queryid = 3589441560 AND dbid = 16384;
 {% endhighlight %}
 
 If you're interested on how to implement such operators, you can look at
-[PoWA implementation](https://github.com/dalibo/powa-archivist/commit/203ed02a5205ad41ce0854bf0580779d7fb6193b#diff-efeed95efc180d43a149361145c2f082R1079).
+[PoWA implementation](https://github.com/powa-team/powa-archivist/commit/203ed02a5205ad41ce0854bf0580779d7fb6193b#diff-efeed95efc180d43a149361145c2f082R1079).
 
 ### Conclusion
 

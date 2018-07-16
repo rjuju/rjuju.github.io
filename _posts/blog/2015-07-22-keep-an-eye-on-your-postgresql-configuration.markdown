@@ -56,7 +56,7 @@ enough:
 A background worker could be used on PostgreSQL 9.3 and more, but as we only
 have to call one function every few minutes, it'd be overkill to add one just
 for this.  If you really want one, you'd better consider settting up
-[PoWA](http://dalibo.github.io/powa/) for that, or another extension that
+[PoWA](https://powa.readthedocs.io/) for that, or another extension that
 allows to run task like [pgAgent](http://www.pgadmin.org/docs/dev/pgagent.html).
 
 ### How to use it

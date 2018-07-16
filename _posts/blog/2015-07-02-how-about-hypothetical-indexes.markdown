@@ -12,15 +12,16 @@ date: 2015-07-02T11:08:03+01:00
 ---
 
 After so much time missing this features,
-[HypoPG](https://github.com/dalibo/hypopg) implements hypothetical indexes
+[HypoPG](https://github.com/HypoPG/hypopg) implements hypothetical indexes
 support for PostgreSQl, available as an extension.
 
 ### Introduction
 
 It's now been some time since the second version of
-[PoWA](https://dalibo.github.io/powa) has been announced. One of the new feature
-of this version is the [pg\_qualstats](https://github.com/dalibo/pg_qualstats)
-extension, written by [Ronan Dunklau](https://rdunklau.github.io).
+[PoWA](https://powa.readthedocs.io/) has been announced. One of the new feature
+of this version is the
+[pg\_qualstats](https://github.com/powa-team/pg_qualstats) extension, written
+by [Ronan Dunklau](https://rdunklau.github.io).
 
 Thanks to this extension, we can now gather real-time statistics to detect
 missing indexes, and much more (if you're interested in this extension, you
@@ -270,10 +271,10 @@ However, I believe it can already be helpful.
 ### What's next ?
 
 Now, the next step is to implement HypoPG support in
-[PoWA](https://dalibo.github.io/powa/), to help DBA decide wether they should
+[PoWA](https://powa.readthedocs.io/), to help DBA decide wether they should
 create the suggested index or not, and remove the current limitations.
 
 If you want to try HypoPG, here is the github repository:
-[github.com/dalibo/hypopg](https://github.com/dalibo/hypopg).
+[github.com/HypoPG/hypopg](https://github.com/HypoPG/hypopg).
 
 Stay tuned!
