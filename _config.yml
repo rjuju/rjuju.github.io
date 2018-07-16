@@ -11,15 +11,18 @@ url: https://rjuju.github.io
 
 # Jekyll configuration
 
-permalink:   date
-markdown:    kramdown
-highlighter: rouge
+paginate:       10
+paginate_page:  "/page:num"
+permalink:      date
+markdown:       kramdown
+highlighter:    rouge
 sass:
   sass_dir: _sass
   style: compressed
 plugins:
   - jekyll-sitemap
   - jekyll-redirect-from
+  - jekyll-paginate
 
 kramdown:
   auto_ids: true

@@ -470,6 +470,25 @@ table {
 	@extend .table
 }
 
+// Pagination
+// --------------------------------------------------
+
+.pagination {
+	a, span {
+		border: solid 1px black;
+		padding: 10px 10px 10px 10px;
+		border-radius: 5px;
+		background-color: $white;
+	}
+	a {
+		color: #2020a0;
+	}
+	span {
+		cursor: not-allowed;
+		background-color: $body-color;
+	}
+}
+
 // Footer
 // --------------------------------------------------
 
