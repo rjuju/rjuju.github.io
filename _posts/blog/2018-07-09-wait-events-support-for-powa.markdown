@@ -11,7 +11,7 @@ image:
 date: 2018-07-09T12:43:34+02:00
 ---
 
-You can now view the **Wait Events** in [PoWA](http://powa.readthedocs.io/)
+You can now view the **Wait Events** in [PoWA](https://powa.readthedocs.io/)
 thanks to the
 [pg\_wait\_sampling](https://github.com/postgrespro/pg_wait_sampling/)
 extension.
