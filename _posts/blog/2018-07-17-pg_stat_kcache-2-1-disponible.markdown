@@ -2,7 +2,7 @@
 layout: post
 title: "pg_stat_kcache 2.1 disponible"
 modified:
-categories: postgresql
+categories: postgresqlfr
 excerpt:
 tags: [ postgresql, monitoring, PoWA, performance]
 lang: fr
