@@ -12,13 +12,13 @@ date: 2018-07-17T19:34:13+02:00
 ---
 
 Une nouvelle version de
-[pg_stat_cache](https://github.com/powa-team/pg_stat_kcache/) est disponible,
+[pg_stat_kcache](https://github.com/powa-team/pg_stat_kcache/) est disponible,
 ajoutant la compatibilité avec Windows et d'autres plateformes, ainsi que
 l'ajout de nouveaux compteurs.
 
 ### Nouveautés
 
-La version 2.1 de [pg_stat_cache](https://github.com/powa-team/pg_stat_kcache/)
+La version 2.1 de [pg_stat_kcache](https://github.com/powa-team/pg_stat_kcache/)
 vient d'être publiée.
 
 Les deux nouvelles fonctionnalités principales sont:

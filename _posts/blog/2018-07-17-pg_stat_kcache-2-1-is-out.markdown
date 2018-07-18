@@ -11,13 +11,13 @@ image:
 date: 2018-07-17T19:34:13+02:00
 ---
 
-A new version of [pg_stat_cache](https://github.com/powa-team/pg_stat_kcache/)
-is out, with support for widows and other platforms, and more counters
+A new version of [pg_stat_kcache](https://github.com/powa-team/pg_stat_kcache/)
+is out, with support for Windows and other platforms, and more counters
 available.
 
 ### What's new
 
-Version 2.1 of [pg_stat_cache](https://github.com/powa-team/pg_stat_kcache/)
+Version 2.1 of [pg_stat_kcache](https://github.com/powa-team/pg_stat_kcache/)
 has just been released.
 
 The two main new features are:
@@ -43,7 +43,7 @@ limited support, only the user and system CPU metrics will be available, the
 other fields will always be NULL.
 
 This new version also exposes all the remaining fields of `getrusage()` that
-have a sense when accumulated per query:
+have a meaning when accumulated per query:
 
 * soft page faults
 * hard page faults
@@ -65,7 +65,7 @@ Depending on your platform, some of those new counters aren't maintained.  On
 GNU/Linux for instance , the swaps, IPC messages and signaled are unfortunately
 not maintained, but those which are are still quite interesting.  For instance,
 let's compare the `context switches` if we run the same number of total
-transaction but with either 2 or 80 concurrent connections on a 4 core machine:
+transaction but with either 2 or 80 concurrent connections on a 4-core laptop:
 
 {% highlight bash %}
 psql -c "SELECT pg_stat_kcache_reset()"
@@ -97,7 +97,7 @@ psql -c "SELECT user_time, system_time, minflts, majflts, nvcsws, nivcsws FROM p
 (1 row)
 {% endhighlight %}
 
-As expected, having 80 concurrent connections on a 4 cores laptop is not the
+As expected, having 80 concurrent connections on a 4-core laptop is not the
 most efficient way to process 8000 transactions.  The transactions latency is
 **44 times** slower with 80 connections than with 2 connections.  At the O/S
 level, we can see that with only 2 concurrent connections, we had only **8
