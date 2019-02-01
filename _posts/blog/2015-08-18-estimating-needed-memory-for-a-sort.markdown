@@ -13,27 +13,32 @@ date: 2015-08-18T16:03:34+02:00
 
 ### work\_mem?
 
-The work memory, or **work\_mem** is one of the hardest thing to configure. It
-can be used for various purposes. It's mainly used when sorting data or creating
-hash tables, but it can also be used by set returning functions using a
-tuplestore for instance, like the **generate\_series()** function. And each node
-of a query can use this amount of memory. Set this parameter too low, and a lot
-of temporary files will be used, set it too high and you may encounter errors,
-or even an Out Of Memory (OOM) depending on your OS configuration.
+The work memory, or **work\_mem** is one of the most complicated setting to
+configure. It can be used for various purposes. It's mainly used when sorting
+data or creating hash tables, but it can also be used by set returning
+functions using a tuplestore for instance, like the **generate\_series()**
+function. Moreover, each node of a query can use this amount of memory. Set
+this parameter too low, and a lot of temporary files will be used, set it too
+high and you may encounter errors, or even an Out Of Memory (OOM) depending on
+your OS configuration.
 
 I'll focus here on the amount of memory needed when sorting data, to help you
 understand how much memory is required when PostgreSQL runs a sort operation.
 
 ### Truth is out
 
-I often hear people say there is a correlation between the size of the temporary
-files generated and the amount of data needed. It's wrong, you can't make any
-assumption on the value of work\_mem based on the size of a sort temporary file.
+I sometimes hear people think that there is a correlation between the size of the
+temporary files generated and the amount of memory that would have been needed
+to perform the same sort entirely in memory.  It's unfortunately wrong, you
+can't make any assumption on the value of work\_mem based only on the size of a
+sort temporary file.
 
 It's because when the data to be sorted don't fit in the allowed memory,
-PostgreSQL switches to an external sort. In addition to the currently used
-memory, a temporary file is used multiple times, to avoid wasting disk space. If
-you want more details on this, the relevant source code is present in
+PostgreSQL will use different algorithms, either external sort or external
+merge, which have a totally different space usage. In addition to work\_mem
+usage, a smaller temporary file can be used multiple times, with external merge
+algorithm, for less disk usage and better performance. If you want more details
+on this, the relevant source code is present in
 [tuplesort.c](https://github.com/postgres/postgres/blob/master/src/backend/utils/sort/tuplesort.c)
 and
 [logtapes.c](https://github.com/postgres/postgres/blob/master/src/backend/utils/sort/logtape.c).
@@ -56,6 +61,11 @@ As a brief introduction, the header of **tuplesort.c** says:
 > disk space as soon as each block is read from its "tape".
 > [...]
 
+**NOTE:** It's an extract from the 9.5 version of the //readme//.  External
+sorts are now using [a //quicksort// quicksort algorithm rather than a
+//replacement
+selection//](https://github.com/postgres/postgres/commit/0711803775a).
+
 It can be easily verified. First, let's create a table and add some data:
 
 {% highlight sql %}
@@ -67,7 +77,7 @@ FROM generate_series(1,100000) i;
 INSERT 0 100000
 {% endhighlight %}
 
-To sort all these row, `7813kB` is needed (more details later). Let's see the
+To sort all these rows, `7813kB` is needed (more details later).  Let's see the
 EXPLAIN ANALYZE with work\_mem set to `7813kB` and `7812kB`:
 
 {% highlight sql %}
@@ -93,7 +103,7 @@ rjuju=# EXPLAIN ANALYZE SELECT * FROM sort ORDER BY id;
    ->  Seq Scan on sort  (cost=0.00..1541.00 rows=100000 width=14) (actual time=0.027..18.621 rows=100000 loops=1)
 {% endhighlight %}
 
-So, `7813kB` are needed, and if we lack only `1kB`, the temporary file size
+So, `7813kB` are needed, but if we lack only `1kB`, the temporary file size
 is `2432kB`.
 
 You can also activate the trace\_sort parameter to have some more information:
