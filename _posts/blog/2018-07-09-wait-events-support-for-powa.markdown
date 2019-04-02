@@ -155,7 +155,7 @@ and `powa_wait_sampling_history_db`
 {: .notice}
 
 And they are visible in the [powa-web](https://pypi.org/project/powa-web/)
-interface.  Here is some example of the wait event display with a simple
+interface.  Here are some examples of the wait event display with a simple
 pgbench run:
 
 
