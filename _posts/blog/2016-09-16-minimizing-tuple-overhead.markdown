@@ -4,7 +4,7 @@ title: "Minimizing tuple overhead"
 modified:
 categories: postgresql
 excerpt:
-tags: [postgresql, performance]
+tags: [postgresql, performance, PoWA]
 lang: gb
 image:
   feature:
@@ -166,7 +166,7 @@ psql):
 # SELECT * FROM raw_1 WHERE id = 500;
 {% endhighlight %}
 
-To properly index this array, we need a GIN index.  To get a the values from
+To properly index this array, we need a GIN index.  To get all the values from
 aggregated data, we need to unnest() the arrays, and to be a little more
 creative to get a single record:
 
@@ -193,28 +193,28 @@ issue since this example is naive, we'll see later how to avoid using GIN
 index to keep total size low.  Also index is way slower to build, meaning that
 INSERT will also be slower.
 
-Here's the chart comparing index creation time and index size, time to retrieve
-all rows and a single row:
+Here's the chart comparing the time to retrieve all rows and a single row:
 
 <img src="/images/tuple_overhead_3.svg">
 
-Getting all the rows is probably not an interesting example, but as soon as
-array contains enough elements it starts to be faster than original table.  We
-see that getting only one element is much more faster than with the btree
-index, thanks to GIN efficiency.  It's not tested here, but since only btree
-index are sorted, if you need to get a lot of data sorted, using a GIN index
-will require an extra sort which will be way slower than a btree index scan.
+Getting all the rows is probably not an interesting example, but it's
+interesting to note that as soon as array contains enough elements it starts to
+be faster than the same operation using the original table.  We also see that
+getting only one element is much more faster than with the btree index, thanks
+to GIN efficiency.  It's not tested here, but since only btree index are
+sorted, if you need to get a lot of data sorted, using a GIN index will require
+an extra sort which will be way slower than a simple btree index scan.
 
 ### A more realistic example
 
 Now that we've seen the basics, let's see how to go further: aggregating more
-than one columns and avoid to use too much disk space with a GIN index.  For
-this, I'll present how [PoWA](https://powa.readthedocs.io/) stores it's
-data.
+than one columns and avoid to use too much disk space (and slowdown at write
+time) with a GIN index.  For this, I'll present how
+[PoWA](https://powa.readthedocs.io/) stores it's data.
 
-For each datasource collected, two tables are used: the *historic and
-aggregated* one, and the *current* one.  These tables store data in a custom
-type instead of plain columns. Let's see the tables related to
+For each datasource collected, two tables are used: one for the *historic and
+aggregated* data, and one the *current data*.  These tables store data in a
+custom type instead of plain columns. Let's see the tables related to
 **pg_stat_statements**:
 
 The custom type, basically all the counters present in pg_stat_statements and
@@ -243,7 +243,7 @@ powa=# \d powa_statements_history_record
  blk_write_time      | double precision         |
 {% endhighlight %}
 
-The aggregated table store the pg_stat_statement unique identifier (queryid,
+The table for current data stores the pg_stat_statement unique identifier (queryid,
 dbid, userid), and a record of counters:
 
 {% highlight sql %}
@@ -257,8 +257,8 @@ powa=# \d powa_statements_history_current
  record  | powa_statements_history_record | not null
 {% endhighlight %}
 
-The aggregated table contains the same unique identifier, an array of records
-and some special fields:
+The table for aggregated data contains the same unique identifier, an array of
+records and some special fields:
 
 {% highlight sql %}
 powa=# \d powa_statements_history
@@ -276,15 +276,15 @@ Indexes:
     "powa_statements_history_query_ts" gist (queryid, coalesce_range)
 {% endhighlight %}
 
-We also store the timestamp range (*coalesce_range*) for all aggregated
-counters in a row, and the minimum and maximum values of each counter in two
+We also store the timestamp range (*coalesce_range*) containing all aggregated
+counters in the row, and the minimum and maximum values of each counter in two
 dedicated records.  These extra fields doesn't consume too much space, and
-allows very efficient indexing and computation, based on the access pattern of
-the related application.
+allows very efficient indexing and computation, based on the data access
+pattern of the related application.
 
 This table is used to know how much ressource a query consumed on a given time
-range.  The GiST index won't be too big since it only indexes one row per X
-aggregated counters, and will find efficiently the rows matching a given
+range.  The GiST index won't be too big since it only indexes two small values
+per X aggregated counters, and will find efficiently the rows matching a given
 queryid and time range.
 
 Then, computing the resources consumed can be done efficiently, since the
@@ -295,22 +295,21 @@ pg_stat_statements counters are strictly monotonic.  The algorithm would be:
   **maxs_in_range.counter - mins_in_range.counter**
 * if not (meaning only two rows for each queryid) we unnest the array, filter
   out records that aren't in the asked time range, keep first and last value
-  and compute for each counter the maximum minus the minimum. The unnest will
-  only
+  and compute for each counter the maximum minus the minimum.
 
 
-**NOTE:** Actually, PoWA interface always unnest all records overlapping the
+**NOTE:** Actually, PoWA interface always unnest all records contained in the
 asked time interval, since the interface is designed to show these counters
 evolution on a relatively small time range, but with a great precision.
-Hopefuly, unnesting the records is not that expensive, especially compared to
+Hopefuly, unnesting the arrays is not that expensive, especially compared to
 the disk space saved.
 {: .notice}
 
 And here's the size needed for the aggregated and non aggregated values.  For
-this I let PoWA generate 12.331.366 records (configuring a snapshot every 5
-seconds for some hours, default aggregation of 100 records per row), and used a
-btree index on (queryid, ((record).ts)
-to simulate the index present on the aggregated table:
+this I let PoWA generate **12.331.366 records** (configuring a snapshot every 5
+seconds for some hours, with default aggregation of 100 records per row), and
+used a btree index on (queryid, ((record).ts) to simulate the index present on
+the aggregated table:
 
 <img src="/images/tuple_overhead_4.svg">
 
@@ -325,13 +324,13 @@ therefore non-relationnal data, such as counters or metadata.
 ### Bonus
 
 Using custom types also allows some nice things, like defining **custom
-operators**.  For instance, the release 3.1.0 of powa will provide two
-operators for each custom type defined:
+operators**.  For instance, the release 3.1.0 of PoWA provides two operators
+for each custom type defined:
 
 * the **-** operator, to get difference between two record
 * the **/** operator, to get the difference *per second*
 
-You'll therfore be able to do this kind of queries:
+You can therefore do quite easily this kind of queries:
 
 {% highlight sql %}
 # SELECT (record - lag(record) over()).*
@@ -365,7 +364,8 @@ If you're interested on how to implement such operators, you can look at
 
 You now know the basics to work around the per tuple overhead.  Depending on
 your needs and your data specifities, you should find a way to aggregate your
-data and add some extra column to keep nice performance.
+data, maybe add some extra columns, to keep nice performance and spare some
+disk space.
 
 <!--
 Test 1, simple integer, 10M row
