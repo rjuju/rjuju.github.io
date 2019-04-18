@@ -69,7 +69,7 @@ processeur système.
 ### Un exemple rapide
 
 En fonction de votre plateforme, certains des nouveaux compteurs ne sont pas
-maintenus.  Sur GNU/Linux par exemple, les swaps, messages IPC et signeux ne
+maintenus.  Sur GNU/Linux par exemple, les swaps, messages IPC et signaux ne
 sont malheureusement pas maintenus, mais ceux qui le sont restent tout à fait
 intéressants.  Par exemple, comparons les `context switches` si nous effectuons
 le même nombre de transactions, mais avec 2 et 80 connexions concurrentes sur
