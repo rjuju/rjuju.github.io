@@ -135,6 +135,9 @@ statistiques disponibles pour les objets partagés (tels que la table
 `pg_database` par exemple), dans une nouvelle ligne pour laquelle `datid` vaut
 **0**, et `datname` vaut **NULL**.
 
-Une sonde dédiée est également [déjà
+~~Une sonde dédiée est également [déjà
 planifiée](https://github.com/OPMDG/check_pgactivity/issues/226) dans
-[check_pgactivity](https://opm.readthedocs.io/probes/check_pgactivity.html)!
+[check_pgactivity](https://opm.readthedocs.io/probes/check_pgactivity.html) !~~
+Une sonde dédiée est également [déjà
+disponible](https://github.com/OPMDG/check_pgactivity/commit/0e8b516e95e4364470d4e205aebc9fe68bbcfd23)
+dans [check_pgactivity](https://opm.readthedocs.io/probes/check_pgactivity.html) !

@@ -129,6 +129,9 @@ for shared objects (such as the `pg_database` table for instance), in a new row
 with `datid` valued to **0**, and a **NULL** `datname`.  Those were always
 accumulated, but weren't displayed in any system view until now.
 
-A dedicated check is also [already
+~~A dedicated check is also [already
 planned](https://github.com/OPMDG/check_pgactivity/issues/226) in
-[check_pgactivity](https://opm.readthedocs.io/probes/check_pgactivity.html)!
+[check_pgactivity](https://opm.readthedocs.io/probes/check_pgactivity.html)!~~
+A dedicated check is also [already
+available](https://github.com/OPMDG/check_pgactivity/commit/0e8b516e95e4364470d4e205aebc9fe68bbcfd23)
+in [check_pgactivity](https://opm.readthedocs.io/probes/check_pgactivity.html)!
