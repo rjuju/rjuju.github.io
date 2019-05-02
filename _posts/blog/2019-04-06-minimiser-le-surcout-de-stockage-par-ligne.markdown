@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Minimier le surcoût de stockage par ligne"
+title: "Minimiser le surcoût de stockage par ligne"
 modified:
 categories: postgresqlfr
 excerpt:
