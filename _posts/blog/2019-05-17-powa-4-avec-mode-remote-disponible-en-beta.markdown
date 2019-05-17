@@ -100,7 +100,7 @@ d'autres fonctionnalités, comme la **suggestion globale d'index**, avec une
 L'*interface graphique* est le composant qui a le plus de changements visibles
 dans cette version 4.  Voici les plus changements les plus importants.
 
-##### Compatibilité ave le mode distant
+##### Compatibilité avec le mode distant
 
 Le changement le plus important est bien évidemment le support pour le [nouveau
 mode remote](https://powa.readthedocs.io/en/latest/remote_setup.html).  En
