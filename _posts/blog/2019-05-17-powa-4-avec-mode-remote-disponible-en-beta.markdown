@@ -38,8 +38,8 @@ a quelques inconvénients.
 
 Tout d'abord, voyons comment se présentait l'architecture avec les versions 3
 et antérieures.  Imaginons une instance contenant 2 bases de données (db1 et
-db2)c), ainsi qu'**une base de données dédiée à PoWA**.  Cette base de donénes
-dédies contient à la fois les *extensions statistiques* nécessaires pour
+db2), ainsi qu'**une base de données dédiée à PoWA**.  Cette base de données
+dédiée contient à la fois les *extensions statistiques* nécessaires pour
 récupérer compteurs de performances actuels ainsi que pour **les stocker**.
 
 <img src="/images/powa_4_local.svg">
