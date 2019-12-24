@@ -1,0 +1,7 @@
+graph quals {
+    label="List of all predicates found"
+    q1[label="t1.id = ?"];
+    q2[label="t1.val = ?"];
+    q3[label="t1.id = ?\nAND t1.ts = ?"];
+    q4[label="t1.id = ?\nAND t1.val = ?\nAND t1.ts = ?"];
+}

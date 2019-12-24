@@ -1,0 +1,39 @@
+digraph quals {
+    label="Weight all paths and choose the highest score"
+    p1[label="score: 6" shape="component" color="darkgreen" fontcolor="darkgreen"];
+    g1_q1[label="t1.id = ?\nweight: 1" color="darkgreen"];
+    g1_q3[label="t1.id = ?\nAND t1.ts = ?\nweight: 2" color="darkgreen"];
+    g1_q4[label="t1.id = ?\nAND t1.val = ?\nAND t1.ts = ?\nweight: 3" color="darkgreen"];
+
+    p2[label="score: 4" shape="component"];
+    g2_q2[label="t1.val = ?\nweight: 1"];
+    g2_q4[label="t1.id = ?\nAND t1.val = ?\nAND t1.ts = ?\nweight: 3"];
+
+    p3[label="score: 3" shape="component"];
+    g3_q1[label="t1.id = ?\nweight: 1"];
+    g3_q3[label="t1.id = ?\nAND t1.ts = ?\nweight: 2"];
+
+    p4[label="score: 1" shape="component"];
+    q1[label="t1.id = ?\nweight: 1"];
+    p5[label="score: 1" shape="component"];
+    q2[label="t1.val = ?\nweight: 1"];
+    p6[label="score: 2" shape="component"];
+    q3[label="t1.id = ?\nAND t1.ts = ?\nweight: 2"];
+    p7[label="score: 3" shape="component"];
+    q4[label="t1.id = ?\nAND t1.val = ?\nAND t1.ts = ?\nweight: 3"];
+
+    p1 -> g1_q4;
+    g1_q4 -> g1_q3;
+    g1_q3 -> g1_q1;
+
+    p2 -> g2_q4;
+    g2_q4 -> g2_q2;
+
+    p3 -> g3_q3;
+    g3_q3 -> g3_q1;
+
+    p4 -> q1;
+    p5 -> q2;
+    p6 -> q3;
+    p7 -> q4;
+}

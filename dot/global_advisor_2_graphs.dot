@@ -1,0 +1,24 @@
+digraph quals {
+    label="Build all possible paths of predicates, possibly containing other predicates"
+    g1_q1[label="t1.id = ?"];
+    g1_q3[label="t1.id = ?\nAND t1.ts = ?"];
+    g1_q4[label="t1.id = ?\nAND t1.val = ?\nAND t1.ts = ?"];
+
+    g2_q2[label="t1.val = ?"];
+    g2_q4[label="t1.id = ?\nAND t1.val = ?\nAND t1.ts = ?"];
+
+    g3_q1[label="t1.id = ?"];
+    g3_q3[label="t1.id = ?\nAND t1.ts = ?"];
+
+    q1[label="t1.id = ?"];
+    q2[label="t1.val = ?"];
+    q3[label="t1.id = ?\nAND t1.ts = ?"];
+    q4[label="t1.id = ?\nAND t1.val = ?\nAND t1.ts = ?"];
+
+    g1_q4 -> g1_q3;
+    g1_q3 -> g1_q1;
+
+    g2_q4 -> g2_q2;
+
+    g3_q3 -> g3_q1;
+}
