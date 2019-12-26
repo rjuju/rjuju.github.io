@@ -144,7 +144,7 @@ GROUP BY i % 2000000;
 This will insert 5 elements per row.  I've done the same test with 20, 100, 200
 and 1000 elements per row.  Results are below:
 
-<img src="/images/tuple_overhead_1.svg">
+[![Benchmark 1](/images/tuple_overhead_1.svg)](/images/tuple_overhead_1.svg)
 
 
 **NOTE:** The size for 1000 element per row is a little higher than lower value.
@@ -185,7 +185,7 @@ SELECT id FROM s WHERE id = 500;
 
 Here's the chart comparing index creation time and index size:
 
-<img src="/images/tuple_overhead_2.svg">
+[![Benchmark 2](/images/tuple_overhead_2.svg)](/images/tuple_overhead_2.svg)
 
 The GIN index is a little more than twice the btree index, if I add the table
 size, total size is almost the same as without aggregation.  That's not a big
@@ -195,7 +195,7 @@ INSERT will also be slower.
 
 Here's the chart comparing the time to retrieve all rows and a single row:
 
-<img src="/images/tuple_overhead_3.svg">
+[![Benchmark 3](/images/tuple_overhead_3.svg)](/images/tuple_overhead_3.svg)
 
 Getting all the rows is probably not an interesting example, but it's
 interesting to note that as soon as array contains enough elements it starts to
@@ -311,7 +311,7 @@ seconds for some hours, with default aggregation of 100 records per row), and
 used a btree index on (queryid, ((record).ts) to simulate the index present on
 the aggregated table:
 
-<img src="/images/tuple_overhead_4.svg">
+[![Benchmark 4](/images/tuple_overhead_4.svg)](/images/tuple_overhead_4.svg)
 
 Pretty efficient, right?
 

@@ -27,7 +27,7 @@ As I explained in my [previous article introducing PoWA 4]({% post_url
 blog/2019-05-17-powa-4-with-remote-mode-beta-is-available %}), this daemon is
 required for a remote mode setup, with this architecture in mind:
 
-<img src="/images/powa_4_remote.svg">
+[![PoWA 4 remote architecture](/images/powa_4_remote.svg)](/images/powa_4_remote.svg)
 
 Its configuration is very simple.  All you need to do is copy and rename the
 provided `powa-collector.conf.sample` file, and adapt the [connection
@@ -93,7 +93,8 @@ daemon](https://powa.readthedocs.io/en/latest/components/powa-collector/index.ht
 status (including all of its dedicated threads) and the list of registered
 *remote servers*.  Here's an example of the new root configuration page:
 
-<img src="/images/powa_4_configuration_page.png">
+[![New configuration
+page](/images/powa_4_configuration_page.png)](/images/powa_4_configuration_page.png)
 
 If the [powa-collector
 daemon](https://powa.readthedocs.io/en/latest/components/powa-collector/index.html)

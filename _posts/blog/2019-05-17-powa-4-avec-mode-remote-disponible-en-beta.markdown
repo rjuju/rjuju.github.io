@@ -42,7 +42,7 @@ db2), ainsi qu'**une base de données dédiée à PoWA**.  Cette base de donnée
 dédiée contient à la fois les *extensions statistiques* nécessaires pour
 récupérer compteurs de performances actuels ainsi que pour **les stocker**.
 
-<img src="/images/powa_4_local.svg">
+[![Architecture en mode local](/images/powa_4_local.svg)](/images/powa_4_local.svg)
 
 Un *[background
 worker](https://powa.readthedocs.io/en/latest/components/powa-archivist/configuration.html#background-worker-configuration)*
@@ -57,7 +57,7 @@ lorsque l'outil de suggestion d'index est utilisé.
 Avec la version 4, l'architecture avec une configuration distante change de
 manière significative:
 
-<img src="/images/powa_4_remote.svg">
+[![Architecture en mode distant](/images/powa_4_remote.svg)](/images/powa_4_remote.svg)
 
 Vous pouvez voir qu'une base de donnée powa dédiée est toujours nécessaire,
 mais **uniquement pour les extensions statistiques**.  Les données sont
@@ -85,7 +85,7 @@ En résumé, avec le nouveau mode distant ajouté dans cette version 4
 L'UI vous accueillera donc maintenant avec une page initiale afin de choisir
 lequel des serveurs stockés sur la base de données cible vous voulez
 travailler :
-<img src="/images/powa_4_all_servers.png">
+[![Choix des serveurs](/images/powa_4_all_servers.png)](/images/powa_4_all_servers.png)
 
 La principale raison pour laquelle il a fallu tellement de temps pour apporter
 ce mode distant est parce que cela apporte beaucoup de complexité, nécessitant
@@ -144,7 +144,7 @@ associé.
 
 Voici un exemple d'un tel changement de configuration en action :
 
-<img src="/images/pg_track_settings_powa4.png">
+[![Changements de configuration détectés](/images/pg_track_settings_powa4.png)](/images/pg_track_settings_powa4.png)
 
 Veuillez également noter qu'il est nécessaire d'avoir au minimum la version
 2.0.0 de [pg_track_settings](https://github.com/rjuju/pg_track_settings/), et
@@ -167,7 +167,7 @@ pages par serveur et par base, dans deux nouveaux graphs :
 
 Voici un example de ce nouveau graph **System Resources** :
 
-<img src="/images/pg_stat_kcache_system_resources_powa4.png">
+[![Ressources système](/images/pg_stat_kcache_system_resources_powa4.png)](/images/pg_stat_kcache_system_resources_powa4.png)
 
 Il y avait également un graph **Wait Events** (disponible quand [l'extension
 pg_wait_sampling](https://powa.readthedocs.io/en/v4/components/stats_extensions/pg_wait_sampling.html)
@@ -188,7 +188,7 @@ pour les utilisateurs qui désirent en apprendre plus à leur sujet.
 
 Voici un exemple :
 
-<img src="/images/powa_4_metrics_doc.png">
+[![Documentation des métriques](/images/powa_4_metrics_doc.png)](/images/powa_4_metrics_doc.png)
 
 ##### Et des correctifs de bugs divers
 

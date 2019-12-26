@@ -151,7 +151,7 @@ GROUP BY i % 2000000;
 Cette requête insèrera 5 éléments par ligne.  J'ai fait le même test avec 20,
 100, 200 et 1000 éléments par ligne.  Les résultats sont les suivants :
 
-<img src="/images/tuple_overhead_1.svg">
+[![Benchmark 1](/images/tuple_overhead_1.svg)](/images/tuple_overhead_1.svg)
 
 
 **NOTE :** La taille pour 1000 éléments par ligne est un peu plus importante
@@ -197,7 +197,7 @@ SELECT id FROM s WHERE id = 500;
 Voici le tableau comparant les temps de création de l'index ainsi que la taille
 de celui-ci, pour chaque dimension de tableau :
 
-<img src="/images/tuple_overhead_2.svg">
+[![Benchmark 2](/images/tuple_overhead_2.svg)](/images/tuple_overhead_2.svg)
 
 L'index GIN est un peu plus que deux fois plus volumineux que l'index btree, et
 si on accumule la taille de la table à la taille de l'index, la taille totale
@@ -210,7 +210,7 @@ plus, l'index est bien plus lent à créer, ce qui signifie qu'INSERT sera
 Voici le tableau comparant le temps pour récupérer toutes les lignes ainsi
 qu'une seule ligne :
 
-<img src="/images/tuple_overhead_3.svg">
+[![Benchmark 3](/images/tuple_overhead_3.svg)](/images/tuple_overhead_3.svg)
 
 Récupérer toutes les lignes n'est probablement pas un exemple intéressant, mais
 il est intéressant de noter que dès que le tableau contient suffisamement
@@ -337,7 +337,7 @@ l'aggrégation par défaut de 100 enregistrements par lignes), et créé un inde
 btree sur (queryid, ((record).ts) pour simuler l'index présent sur les tables
 aggrégées :
 
-<img src="/images/tuple_overhead_4.svg">
+[![Benchmark 4](/images/tuple_overhead_4.svg)](/images/tuple_overhead_4.svg)
 
 Vous trouvez aussi que c'est plutôt efficace ?
 

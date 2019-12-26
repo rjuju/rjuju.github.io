@@ -28,7 +28,7 @@ post_url blog/2019-05-17-powa-4-with-remote-mode-beta-is-available %}), ce
 daemon est nécessaire  pour la configuration d'un mode remote, en gardant cette
 architecture à l'esprit :
 
-<img src="/images/powa_4_remote.svg">
+[![Architecture de PoWA 4 en mode distant](/images/powa_4_remote.svg)](/images/powa_4_remote.svg)
 
 Sa configuration est très simple.  Il vous suffit tout simplement de renommer
 le fichier `powa-collector.conf.sample` fourni, et d'adapter [l'URI de
@@ -98,7 +98,8 @@ daemon](https://powa.readthedocs.io/en/latest/components/powa-collector/index.ht
 (incluant tous ses threads dédiés) ainsi que la liste des *serveurs distants*
 déclarés.  Voici un exemple de cette nouvelle page racine de configuration :
 
-<img src="/images/powa_4_configuration_page.png">
+[![Nouvelle page de
+configuration](/images/powa_4_configuration_page.png)](/images/powa_4_configuration_page.png)
 
 Si le [daemon
 powa-collector](https://powa.readthedocs.io/en/latest/components/powa-collector/index.html)

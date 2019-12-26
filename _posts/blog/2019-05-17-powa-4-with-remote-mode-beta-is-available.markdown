@@ -41,7 +41,7 @@ with 2 databases (db1 and db2), plus **one database dedicated for PoWA**.  This
 dedicated database contains both the *stat extension* required to get the
 live performance data and to **store them**.
 
-<img src="/images/powa_4_local.svg">
+[![Local mode architecture](/images/powa_4_local.svg)](/images/powa_4_local.svg)
 
 A custom *[background
 worker](https://powa.readthedocs.io/en/latest/components/powa-archivist/configuration.html#background-worker-configuration)*
@@ -54,7 +54,7 @@ tool.
 
 With version 4, the architecture with a remote setup change quite a lot:
 
-<img src="/images/powa_4_remote.svg">
+[![Remote mode architecture](/images/powa_4_remote.svg)](/images/powa_4_remote.svg)
 
 You can see the a dedicated powa database is still required, but **only for the
 stat extensions**.  Data are now stored on a different instance.  Then, the
@@ -79,7 +79,7 @@ In short, with the new remote mode introduced in this version 4:
 
 The UI will therefore now welcome you with a initial page to let you chose
 which server stored on the configured database you want to wotk on:
-<img src="/images/powa_4_all_servers.png">
+[![Servers choice](/images/powa_4_all_servers.png)](/images/powa_4_all_servers.png)
 
 The main reason it took so much time to bring a remote mode is because this
 adds quite some complexity, requiring a major rewrite of the whole PoWA stack.
@@ -134,7 +134,7 @@ vertical line on the underlying graph.
 
 Here's an example of such detected configuration change in action:
 
-<img src="/images/pg_track_settings_powa4.png">
+[![Configuration changes detected](/images/pg_track_settings_powa4.png)](/images/pg_track_settings_powa4.png)
 
 Please also note that you need at least version 2.0.0 of
 [pg_track_settings](https://github.com/rjuju/pg_track_settings/), and that the
@@ -155,7 +155,7 @@ They're now displayed on per-server and per-database too, in two graphs:
 
 Here is an example of this new **System Resources** graph:
 
-<img src="/images/pg_stat_kcache_system_resources_powa4.png">
+[![System ressources](/images/pg_stat_kcache_system_resources_powa4.png)](/images/pg_stat_kcache_system_resources_powa4.png)
 
 There was also a **Wait Events** graph (available when [pg_wait_sampling
 extension](https://powa.readthedocs.io/en/v4/components/stats_extensions/pg_wait_sampling.html)
@@ -175,7 +175,7 @@ for users who want to learn more about them.
 
 Here's an example:
 
-<img src="/images/powa_4_metrics_doc.png">
+[![Metrics documentation](/images/powa_4_metrics_doc.png)](/images/powa_4_metrics_doc.png)
 
 ##### And general bugfixes
 
