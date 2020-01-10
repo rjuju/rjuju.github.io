@@ -22,6 +22,11 @@ configure PoWA, while some users wanted to only have the global index advisor.
 In such case and for simplicity, the algorithm used in PoWA is now available in
 pg\_qualstats version 2 without requiring any additional component.
 
+EDIT: The `pg_qualstats_index_advisor()` function has been changed to return
+**json** rather than **jsonb**, so that the compatibility with PostgreSQL 9.3
+is maintained.  The query examples are therefore also modified to use
+`json_array_elements()` rather than `jsonb_array_elements()`.
+
 ### What is pg\_qualstats
 
 A simple way to explain what is pg\_qualstats would be to say that it's like
@@ -139,14 +144,14 @@ search.
 ### Usage example
 
 A simple set-returning function is provided, with optional parameters, that
-returns a jsonb value:
+returns a json value:
 
 {% highlight sql %}
 CREATE OR REPLACE FUNCTION pg_qualstats_index_advisor (
     min_filter integer DEFAULT 1000,
     min_selectivity integer DEFAULT 30,
     forbidden_am text[] DEFAULT '{}')
-    RETURNS jsonb
+    RETURNS json
 {% endhighlight %}
 
 The parameter names are self explanatory:
@@ -180,7 +185,7 @@ SELECT COUNT(*) FROM pgqs WHERE id = 1;
 And here's what the function returns:
 {% highlight sql %}
 SELECT v
-  FROM jsonb_array_elements(
+  FROM json_array_elements(
     pg_qualstats_index_advisor(min_filter => 50)->'indexes') v
   ORDER BY v::text COLLATE "C";
                                v
@@ -191,7 +196,7 @@ SELECT v
 (3 rows)
 
 SELECT v
-  FROM jsonb_array_elements(
+  FROM json_array_elements(
     pg_qualstats_index_advisor(min_filter => 50)->'unoptimised') v
   ORDER BY v::text COLLATE "C";
         v
