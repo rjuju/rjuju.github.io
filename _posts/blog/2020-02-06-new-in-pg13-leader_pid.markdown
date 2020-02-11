@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "New in pg12: New leader_pid column in pg_stat_activity"
+title: "New in pg13: New leader_pid column in pg_stat_activity"
 modified:
 categories: postgresql
 excerpt:
