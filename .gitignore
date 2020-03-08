@@ -6,3 +6,6 @@ codekit-config.json
 node_modules
 .sass-cache
 *.sw*
+.bundle/
+vendor/
+.jekyll-cache/
