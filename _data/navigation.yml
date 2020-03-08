@@ -6,8 +6,16 @@
 #- title: Articles
 #  url: /articles/
 
-- title: Blog
-  url: /blog/
+- title: <div class="flag-icon flag-icon-gb"></div> PostgreSQL
+  url: /postgresql/
+  hover: PostgreSQL related articles in English
+
+- title: <div class="flag-icon flag-icon-fr"></div> PostgreSQL
+  url: /postgresqlfr/
+  hover: Articles sur PostgreSQL en Français
+
+# - title: Blog
+#   url: /blog/
 
 - title: Tags
   url: /tags/
