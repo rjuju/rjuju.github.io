@@ -23,7 +23,6 @@ of a query processing: the number of execution, cumulated time, but also
 minimum, maximum, mean and also the standard deviation.  With PostgreSQL 13,
 you'll also have those metrics for the planification part!
 
-{% highlight commit %}
     commit 17e03282241c6ac58a714eb0c3b6a8018cf6167a
     Author: Fujii Masao <fujii@postgresql.org>
     Date:   Thu Apr 2 11:20:19 2020 +0900
@@ -55,7 +54,6 @@ you'll also have those metrics for the planification part!
         Discussion: https://postgr.es/m/CAHGQGwFx_=DO-Gu-MfPW3VQ4qC7TfVdH2zHmvZfrGv6fQ3D-Tw@mail.gmail.com
         Discussion: https://postgr.es/m/CAEepm=0e59Y_6Q_YXYCTHZkqOc6H2pJ54C_Xe=VFu50Aqqp_sA@mail.gmail.com
         Discussion: https://postgr.es/m/DB6PR0301MB21352F6210E3B11934B0DCC790B00@DB6PR0301MB2135.eurprd03.prod.outlook.com
-{% endhighlight %}
 
 
 Keep in mind that even simple query can have a surprisingly high planification
