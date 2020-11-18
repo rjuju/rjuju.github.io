@@ -24,7 +24,7 @@ PostgreSQL supports procedural code for many languages, the most popular one
 probably being plpgsql.
 
 Even if that language allows you to write raw SQL statements, any function
-written in that language is still a block box as far as PostgreSQL in
+written in that language is still a block box as far as PostgreSQL is
 concerned, which means that PostgreSQL won't perform a lot of checks to verify
 code quality, typo or any other problem related to code development.  That's
 where [plpgsql_check extension](https://github.com/okbob/plpgsql_check) comes
@@ -44,11 +44,11 @@ As I mentioned above, plpgsql code is a black box as far as PostgreSQL is
 concerned.  The direct consequence is that the performance diagnostic
 possibilities are quite limited.
 
-Using core PostgreSQL, the only option is using `pg_stat_user_functions` (wich
+Using core PostgreSQL, the only option is using `pg_stat_user_functions` (which
 requires `track_functions` to be set to **pl** or **all**).  It'll show the
 number of time each function has been called, and how long the execution took
 including and excluding nested functions.  Unfortunately, this view can only
-help you track you down **which** function is slow, but not **why**, as you
+help you track down **which** function is slow, but not **why**, as you
 don't get any per-instruction metric.
 
 You can somehow work around that limitation using the contrib extensions
@@ -60,8 +60,8 @@ blog/2020-04-04-new-in-pg13-monitoring-query-planner %}) and [WAL counters]({%
 post_url blog/2020-04-07-new-in-pg13-WAL-monitoring %}) since PostgreSQL 13).
 
 The only problem is that it can be quite tricky to match pg_stat_statements
-entries with your plpgsql code, as there's way to directly identify what
-queries are run inside you plpgsql code.
+entries with your plpgsql code, as there's way to directly identify which
+queries are run inside your plpgsql code.
 
 ### plpgsql_check code profiler
 
@@ -105,9 +105,9 @@ your functions.  Here's a simplistic example:
 
 In this example, we can see immediately that the slowdown comes from source
 code line n°9, which has a total execution time of 1s.  Using the **max_time**
-field, wee see that it's due to the 2nd statements.  As we also have the source
-code available in the view, we can immediately see the problematic query, which
-here is a simple call to `pg_sleep(1)`.
+field, we see that it's because of the 2nd statements.  As we also have the
+source code available in the view, we can immediately see the problematic
+query, which here is a simple call to `pg_sleep(1)`.
 
 So far so good.  But with less naive example the cause of slow execution might
 be less obvious, and it could be handy to rely on all the available extensions
