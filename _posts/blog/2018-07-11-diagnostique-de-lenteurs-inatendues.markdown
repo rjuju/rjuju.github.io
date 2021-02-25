@@ -84,7 +84,7 @@ qu'il y ait 1500 connections), le « mauvais » temps de traitement est plus de
 **100 fois plus lent**, pour une requête tout ce qu'il y a de plus simple.
 
 Un autre exemple de requête applicative très simple était fourni, mais avec un
-peu plus d'informations.  Voici une versino anonymisée :
+peu plus d'informations.  Voici une version anonymisée :
 
 {% highlight sql %}
 EXPLAIN (ANALYZE, BUFFERS) SELECT une_colonne
