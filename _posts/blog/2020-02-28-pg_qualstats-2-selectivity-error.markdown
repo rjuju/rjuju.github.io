@@ -152,18 +152,18 @@ storing it in memory, to make it more efficient.  As it tries to limit memory
 consumption as much as possible, the smallest relation is materialized, and
 that's the mistake here.
 
-Indeed, postgres will read the whole table twice: once for every row correspond
-to the `val1 = 0` predicate for the outer relation, and once to find
-all rows to be materialized.  If the opposite was done, as it would probably
-have if the estimates had been more realistic, the table would only have been
-read once.
+Indeed, postgres will read the whole table twice: once to get every rows
+corresponding to the `val1 = 0` predicate for the outer relation, and once to
+find all rows to be materialized.  If the opposite was done, as it would
+probably have if the estimates had been more realistic, the table would only
+have been read once.
 
-In this case, as the dataset isn't big and quite artificial, so a better plan
-wouldn't drastically change the execution time.  But keep in mind than with real
-production environements, it could mean choosing a nested loop assuming that
-there'll be only a couple of rows to loop on while in reality the backend will
-spend minutes or even hours looping over millions of rows, and another plan
-would have been orders of magnitude quicker.
+In this case, as the dataset isn't big and quite artificial, a better plan
+wouldn't drastically change the execution time.  But keep in mind than with
+real production environements, it could mean choosing a nested loop assuming
+that there'll be only a couple of rows to loop on while in reality the backend
+will spend minutes or even hours looping over millions of rows, and another
+plan would have been orders of magnitude quicker.
 
 ### Detecting the problem
 
