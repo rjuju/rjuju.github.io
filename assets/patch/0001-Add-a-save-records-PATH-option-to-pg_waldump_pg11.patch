@@ -1,0 +1,326 @@
+From 7251670283d8f37fe435b915dea6a56e01a35e5f Mon Sep 17 00:00:00 2001
+From: Julien Rouhaud <julien.rouhaud@free.fr>
+Date: Fri, 10 Feb 2023 11:01:35 +0800
+Subject: [PATCH] Add a --save-records=PATH option to pg_waldump
+
+Ignore anything that's not a HEAP / INSERT[+INIT] on a user table.
+
+Note that this option will extract (and reformat) xl_heap_insert records from
+full-page images.
+
+Author: Julien Rouhaud
+---
+ src/bin/pg_waldump/pg_waldump.c | 229 ++++++++++++++++++++++++++++++++
+ 1 file changed, 229 insertions(+)
+
+diff --git a/src/bin/pg_waldump/pg_waldump.c b/src/bin/pg_waldump/pg_waldump.c
+index 7d03e19a11..b635be8c69 100644
+--- a/src/bin/pg_waldump/pg_waldump.c
++++ b/src/bin/pg_waldump/pg_waldump.c
+@@ -16,11 +16,15 @@
+ #include <sys/stat.h>
+ #include <unistd.h>
+ 
++#include "access/heapam_xlog.h"
++#include "access/htup_details.h"
+ #include "access/xlogreader.h"
+ #include "access/xlogrecord.h"
++#include "access/xlogutils.h"
+ #include "access/xlog_internal.h"
+ #include "access/transam.h"
+ #include "common/fe_memutils.h"
++#include "common/file_perm.h"
+ #include "getopt_long.h"
+ #include "rmgrdesc.h"
+ 
+@@ -52,6 +56,9 @@ typedef struct XLogDumpConfig
+ 	int			filter_by_rmgr;
+ 	TransactionId filter_by_xid;
+ 	bool		filter_by_xid_enabled;
++
++	/* save options */
++	char	   *save_record_path;
+ } XLogDumpConfig;
+ 
+ typedef struct Stats
+@@ -117,6 +124,37 @@ verify_directory(const char *directory)
+ 	return true;
+ }
+ 
++/*
++ * Create if necessary the directory storing the full-page images extracted
++ * from the WAL records read.
++ */
++static void
++create_fullpage_directory(char *path)
++{
++	int			ret;
++
++	switch ((ret = pg_check_dir(path)))
++	{
++		case 0:
++			/* Does not exist, so create it */
++			if (pg_mkdir_p(path, pg_dir_create_mode) < 0)
++				fatal_error("could not create directory \"%s\": %m", path);
++			break;
++		case 1:
++			/* Present and empty, so do nothing */
++			break;
++		case 2:
++		case 3:
++		case 4:
++			/* Exists and not empty */
++			fatal_error("directory \"%s\" exists but is not empty", path);
++			break;
++		default:
++			/* Trouble accessing directory */
++			fatal_error("could not access directory \"%s\": %m", path);
++	}
++}
++
+ /*
+  * Split a pathname as dirname(1) and basename(1) would.
+  *
+@@ -532,6 +570,183 @@ XLogDumpCountRecord(XLogDumpConfig *config, XLogDumpStats *stats,
+ 	stats->record_stats[rmid][recid].fpi_len += fpi_len;
+ }
+ 
++/*
++ * Extract the record, ie. the chunk at the given offset, for a given FPI of a
++ * HEAP record, with the exact same format as it it were a normal
++ * xl_heap_insert record.
++ */
++static char *
++extract_heap_record_from_fpw(XLogReaderState *record, const char *data,
++							 Size *len)
++{
++	char	   *rec = XLogRecGetData(record);
++	uint8		info = XLogRecGetInfo(record) & ~XLR_INFO_MASK;
++	xl_heap_insert *xlrec;
++	OffsetNumber lineoff;
++	Page		dp;
++	int			lines;
++	ItemId		lpp;
++	char	   *extracted;
++	int			fullsize;
++	HeapTupleHeader htup;
++	xl_heap_header *xlhdr;
++
++	/* see heap_desc() for how to get the offset */
++	info &= XLOG_HEAP_OPMASK;
++	if (info != XLOG_HEAP_INSERT)
++		fatal_error("Unsupportes HEAP operation: 0x%02x\n", info);
++
++	xlrec = (xl_heap_insert *) rec;
++	lineoff = xlrec->offnum;
++
++	/* see heapgetpage() / heapgettup() for how to get the data chunk */
++	dp = (Page) data;
++	lines = PageGetMaxOffsetNumber(dp);
++
++	if (lineoff > lines)
++		fatal_error("off %u > max value %d", lineoff, lines);
++
++	lpp = PageGetItemId(dp, lineoff);
++
++	if (!ItemIdIsNormal(lpp))
++		fatal_error("ItemId %u:%u:%u for off %u is not LP_NORMAL",
++					lpp->lp_off, lpp->lp_flags, lpp->lp_len, lineoff);
++
++	if (ItemIdGetLength(lpp) == 0)
++		fatal_error("Item does not have data\n");
++	if (ItemIdGetLength(lpp) >= MaxHeapTupleSize)
++		fatal_error("Item length seems wrong\n");
++	if (ItemIdGetOffset(lpp) + ItemIdGetLength(lpp) >= BLCKSZ)
++		fatal_error("Item points to data outside of the page\n");
++
++	/*
++	 * We want to generate the same data as a normal HEAP INSERT record, which
++	 * means a xl_heap_header followed by a HeapTuple (without its header).
++	 */
++	fullsize = SizeOfHeapHeader + ItemIdGetLength(lpp) - SizeofHeapTupleHeader;
++	extracted = malloc(sizeof(char) * fullsize);
++
++	/* Generate the expected xl_heap_header */
++	memset(extracted, 0, sizeof(char) + SizeOfHeapHeader);
++	xlhdr = (xl_heap_header *) extracted;
++	htup = (HeapTupleHeader) PageGetItem((Page) dp, lpp);
++	xlhdr->t_infomask2 = htup->t_infomask2;
++	xlhdr->t_infomask = htup->t_infomask;
++	xlhdr->t_hoff = htup->t_hoff;
++
++	/* And append the actual data, minus the HeapTupleHeader */
++	memcpy(extracted + SizeOfHeapHeader,
++		   PageGetItem((Page) dp, lpp) + SizeofHeapTupleHeader,
++		   sizeof(char) * (ItemIdGetLength(lpp) - SizeofHeapTupleHeader));
++	*len = fullsize;
++
++	return extracted;
++}
++
++/*
++ * Function to externally save the record data stored in the given WAL record.
++ * For now, ignore anything that's not a HEAP / INSERT record on a user table.
++ */
++static void
++XLogRecordSaveRecord(XLogReaderState *record, const char *savepath)
++{
++	const char *id;
++	const RmgrDescData *desc = &RmgrDescTable[XLogRecGetRmid(record)];
++	uint8		info = XLogRecGetInfo(record);
++	int			rmgr_id = XLogRecGetRmid(record);
++	int			block_id;
++
++	if (rmgr_id != RM_HEAP_ID)
++		return;
++
++	id = desc->rm_identify(info);
++
++	/* we want both "INSERT" and "INSERT+INIT" */
++	if (!id || (strncmp(id, "INSERT", strlen("INSERT")) != 0))
++		return;
++
++	for (block_id = 0; block_id <= record->max_block_id; block_id++)
++	{
++		char	   *data;
++		Size		len;
++		char		filename[MAXPGPATH];
++		char		forkname[FORKNAMECHARS + 2];	/* _ + terminating zero */
++		FILE	   *file;
++		BlockNumber blk;
++		RelFileNode rnode;
++		ForkNumber	fork;
++		PGAlignedXLogBlock page;
++		bool		freeit = false;
++
++		/* hack, for heap_insert we only want data from block 0 */
++		if (block_id != 0)
++			continue;
++
++		if (!XLogRecHasBlockRef(record, block_id))
++			continue;
++
++		data = XLogRecGetBlockData(record, block_id, &len);
++		if (len == 0)
++		{
++			if (!RestoreBlockImage(record, block_id, page.data))
++				continue;
++
++			data = extract_heap_record_from_fpw(record, page.data, &len);
++
++			if (len == 0)
++			{
++				printf("could not extract record\n");
++				continue;
++			}
++			else
++			{
++				/*
++				 * we malloc'ed some data, need to free it from that point
++				 * before looping.
++				 */
++				freeit = true;
++			}
++		}
++
++		(void) XLogRecGetBlockTag(record, block_id, &rnode, &fork, &blk);
++
++		/*
++		 * Ignore activity on system tables, assuming a relfilenode/oid mapping
++		 */
++		if (rnode.relNode < FirstNormalObjectId)
++			goto may_free_continue;
++
++		/* Ignore activity on shared tables */
++		if (rnode.dbNode == InvalidOid)
++			goto may_free_continue;
++
++		if (fork >= 0 && fork <= MAX_FORKNUM)
++			sprintf(forkname, "_%s", forkNames[fork]);
++		else
++			fatal_error("invalid fork number: %u", fork);
++
++		snprintf(filename, MAXPGPATH, "%s/%08X-%08X.%u.%u.%u.%u%s", savepath,
++				 (uint32) (record->ReadRecPtr >> 32),
++				 (uint32) record->ReadRecPtr,
++				 rnode.spcNode, rnode.dbNode, rnode.relNode, blk, forkname);
++
++		file = fopen(filename, PG_BINARY_W);
++		if (!file)
++			fatal_error("could not open file \"%s\": %m", filename);
++
++		if (fwrite(data, len, 1, file) != 1)
++			fatal_error("could not write file \"%s\" (%lu): %m",
++						filename, len);
++
++		if (fclose(file) != 0)
++			fatal_error("could not close file \"%s\": %m", filename);
++
++may_free_continue:
++		if (freeit)
++			free(data);
++	}
++}
++
+ /*
+  * Print a record to stdout
+  */
+@@ -821,6 +1036,8 @@ usage(void)
+ 	printf(_("  -t, --timeline=TLI     timeline from which to read log records\n"
+ 			 "                         (default: 1 or the value used in STARTSEG)\n"));
+ 	printf(_("  -V, --version          output version information, then exit\n"));
++	printf(_("      --save-records=PATH\n"
++			 "                         save all records\n"));
+ 	printf(_("  -x, --xid=XID          only show records with transaction ID XID\n"));
+ 	printf(_("  -z, --stats[=record]   show statistics instead of records\n"
+ 			 "                         (optionally, show per-record statistics)\n"));
+@@ -853,6 +1070,7 @@ main(int argc, char **argv)
+ 		{"xid", required_argument, NULL, 'x'},
+ 		{"version", no_argument, NULL, 'V'},
+ 		{"stats", optional_argument, NULL, 'z'},
++		{"save-records", required_argument, NULL, 1},
+ 		{NULL, 0, NULL, 0}
+ 	};
+ 
+@@ -878,6 +1096,7 @@ main(int argc, char **argv)
+ 	config.filter_by_rmgr = -1;
+ 	config.filter_by_xid = InvalidTransactionId;
+ 	config.filter_by_xid_enabled = false;
++	config.save_record_path = NULL;
+ 	config.stats = false;
+ 	config.stats_per_record = false;
+ 
+@@ -995,6 +1214,9 @@ main(int argc, char **argv)
+ 					}
+ 				}
+ 				break;
++			case 1:
++				config.save_record_path = pg_strdup(optarg);
++				break;
+ 			default:
+ 				goto bad_argument;
+ 		}
+@@ -1020,6 +1242,9 @@ main(int argc, char **argv)
+ 		}
+ 	}
+ 
++	if (config.save_record_path != NULL)
++		create_fullpage_directory(config.save_record_path);
++
+ 	/* parse files as start/end boundaries, extract path if not specified */
+ 	if (optind < argc)
+ 	{
+@@ -1179,6 +1404,10 @@ main(int argc, char **argv)
+ 		else
+ 			XLogDumpDisplayRecord(&config, xlogreader_state);
+ 
++		/* save record if requested */
++		if (config.save_record_path != NULL)
++			XLogRecordSaveRecord(xlogreader_state, config.save_record_path);
++
+ 		/* check whether we printed enough */
+ 		config.already_displayed_records++;
+ 		if (config.stop_after_records > 0 &&
+-- 
+2.37.0
+
