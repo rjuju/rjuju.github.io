@@ -503,17 +503,17 @@ rjuju=# SELECT oid::regclass::text, pg_size_pretty(pg_relation_size(oid)),
  decode_record | 8192 bytes     | pg_toast.pg_toast_66731 | 8192 bytes
 (1 row)
 
-rjuju=# DELETE FROM decode_record"
+rjuju=# DELETE FROM decode_record;
 DELETE 4
 
 -- Make sure we remove all records and physically empty the tables
-rjuju=# VACUUM decode_record"
+rjuju=# VACUUM decode_record;
 VACUUM
 
 rjuju=# SELECT oid::regclass::text, pg_size_pretty(pg_relation_size(oid)),
   reltoastrelid::regclass::text, pg_size_pretty(pg_relation_size(reltoastrelid))
   FROM pg_class
-  WHERE relname = 'decode_record'"
+  WHERE relname = 'decode_record';
       oid      | pg_size_pretty |      reltoastrelid      | pg_size_pretty
 ---------------+----------------+-------------------------+----------------
  decode_record | 0 bytes        | pg_toast.pg_toast_66737 | 0 bytes
@@ -598,7 +598,7 @@ I hope you enjoyed those two articles and learned a bit about the WAL
 infrastructure and the way pages and tuples work internally.
 
 If you missed it in the article, [here is the link for the full
-extension](/assets/patch/pg_decode_record.tgz)
+extension](/assets/patch/pg_decode_record.tgz).
 
 I want to emphasize again that all the code I showed here is only a quick proof
 of concept that's thought for one narrow use case, and it should be used
