@@ -62,9 +62,9 @@ First of all, let's quickly see how postgres stores tables and indexes on disk.
 I will only cover those basics that will be helpful for the rest of the
 article.  If you want to dig more into this topic, there are a tons of resource
 available.  You can refer to [this entry point in the
-code](src/include/storage/bufpage.h.), and I otherwise recommend looking at
-[the section about it in "The internals of postgres"
-website](https://www.interdb.jp/pg/pgsql01.html#_1.3.).
+code](https://github.com/postgres/postgres/blob/master/src/include/storage/bufpage.h.),
+and I otherwise recommend looking at [the section about it in "The internals of
+postgres" website](https://www.interdb.jp/pg/pgsql01.html#_1.3.).
 
 A good general introduction is [the
 documentation](https://www.postgresql.org/docs/current/storage-page-layout.html),
